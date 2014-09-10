@@ -1,0 +1,19 @@
+- Make the script properly accept data piped into it as well as read a named file in arguments
+- Show usage when the script is run without any arguments
+- Allow the textual format to be converted back into a binary
+- Add in a basic "diff" ability to see what was changed in the textual representation of a file
+- Add a header to the textual representation so that the file itself has information showing what file
+  it is a representation of.
+- Add an option to split shown text up into nicely viewable lines
+- Add an ability to do RLE for sequential hex bytes
+- Add a configuration file with the ability to recognize certain sequence of bytes and show them in a readable way
+  - Make it so this is completely reversible so any changes can be flowed back to the binary file
+- Add the ability to recognize certain types of files and automatically use a useful set of rules to parse the files apart
+- Allow multiple output format; specifically XML for more complex file formats
+- Add the ability to detect and decompress embedded compressed data
+- Add a Makefile
+- Alter the code to use stdint.h instead of confusing "unsigned char" nonsense
+- Add a command line option to use lowercase hex instead of uppercase
+- Add an output format that renders files in the same way as they would basically be show in old DOS debug command
+- Add an HTML visualization format that creates a nicely colorized rendered view of the binary data.
+  - Make it so that the view is basically editable and resaveable via pure javascript
