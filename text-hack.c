@@ -6,6 +6,7 @@
 #include<string.h>
 #include<unistd.h>
 #include<libgen.h>
+#include<stdint.h>
 
 // Text to print before every hexidecimal byte representation
 #define HEX_PREFIX '~'
@@ -73,12 +74,12 @@ int main( int argc, char *argv[] ) {
     char accept[ 256 ];
     memset( accept, 0, 256 );
     char accept_these[] = OK_CHARS;
-    for( unsigned int i=0; i < sizeof( accept_these ); i++ ) {
+    for( unsigned int i=0; i < ( sizeof( accept_these ) - 1 ); i++ ) {
         char let = accept_these[ i ];
         accept[ let ] = 1;
     }
     
-    unsigned char ok_cnt = 0;
+    uint8_t prev_ok = 0;
     
     int stack_fill = 0; // how much of the stack is filled
     bool stack_full = 0;
@@ -91,32 +92,33 @@ int main( int argc, char *argv[] ) {
         }
         
         // shift out the lowest char
-        char n_ago = stack[ 0 ];
+        uint8_t n_ago = stack[ 0 ];
         
+        // shift off the beginning of the stack
         for( int i=0;i<(MIN_SEQUENCE-1);i++ ) 
             stack[ i ] = stack[ i + 1 ];
         
-        // push the new character onto the stack and pop the last one
+        // "push" the new character onto the end of the stack
         stack[ MIN_SEQUENCE - 1 ] = let;
         
-        char num_ok = 0;
+        char ok_in_stack = 0;
         if( accept[ n_ago ] ) {
-            num_ok++;
-            for( int i=0;i<=(MIN_SEQUENCE-1);i++ ) {
-                if( accept[ stack[ i ] ] ) num_ok++;
-                else i=100;
+            ok_in_stack++;
+            for( int i=1;i<MIN_SEQUENCE;i++ ) {
+                if( accept[ stack[ i ] ] ) ok_in_stack++;
+                else break;
             }
         }
         else
-            ok_cnt = 0;
+            prev_ok = 0;
         
-        if( ( num_ok + ok_cnt ) >= MIN_SEQUENCE ) {
+        if( ( ok_in_stack + prev_ok ) >= MIN_SEQUENCE ) {
             putchar( n_ago );
-            ok_cnt++;
+            prev_ok++;
         }
         else {
             printf( "%c%02X", HEX_PREFIX, n_ago );
-            ok_cnt = 0;
+            prev_ok = 0;
         }
     }
     for( int i=0;i<stack_fill;i++ )
