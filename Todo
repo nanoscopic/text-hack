@@ -1,5 +1,3 @@
-- Make the script properly accept data piped into it as well as read a named file in arguments
-- Show usage when the script is run without any arguments
 - Allow the textual format to be converted back into a binary
 - Add in a basic "diff" ability to see what was changed in the textual representation of a file
 - Add a header to the textual representation so that the file itself has information showing what file
@@ -17,3 +15,7 @@
 - Add an output format that renders files in the same way as they would basically be show in old DOS debug command
 - Add an HTML visualization format that creates a nicely colorized rendered view of the binary data.
   - Make it so that the view is basically editable and resaveable via pure javascript
+  
+Done:
+- Make the script properly accept data piped into it as well as read a named file in arguments
+- Show usage when the script is run without any arguments

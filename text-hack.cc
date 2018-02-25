@@ -3,6 +3,9 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
+#include<unistd.h>
+#include<libgen.h>
 
 // Text to print before every hexidecimal byte representation
 #define HEX_PREFIX "~"
@@ -22,7 +25,38 @@ unsigned char let_okay( unsigned char let );
 unsigned char accept[ 256 ];
 
 int main( int argc, char *argv[] ) {
-    FILE *data_handle = fopen("binary","r");
+    FILE *data_handle = 0;
+    bool showhelp = 0;
+    if( argc < 2 ) {
+        if( isatty( STDIN_FILENO ) ) {
+            showhelp = 1;
+        }
+    }
+    
+    if( argc > 1 ) {
+        if( !strncmp( argv[1], "--help", 6 ) ) showhelp = 1;
+        data_handle = fopen( argv[1], "r" );
+    }
+    
+    if( showhelp ) {
+        char *base = basename( argv[0] );
+        printf("=== Text Hack ===\nTakes input data and outputs specific characters as regular text and hex for other characters.\n\n");
+        
+        printf("Characters configured to be output normally:\n");
+        #ifdef ALPHA_NUM
+        printf("  Alphanumerics\n" );
+        #endif
+        printf("  %s\n\n", OK_CHARACTERS );
+        
+        printf("Usage:\n  %s [filename]\n  %s < filename\n", base, base );
+        
+        return 0;
+    }
+        
+    if( !data_handle ) {
+        return 1;
+    }
+    
     long pos = 0;
     
     unsigned char stack[20];
