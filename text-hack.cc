@@ -66,8 +66,9 @@ int main( int argc, char *argv[] ) {
         return 1;
     }
     
-    unsigned char stack[20];
-    memset( stack, 0, 20 );
+    #define STACK_SIZE MIN_SEQUENCE + 1
+    unsigned char stack[ STACK_SIZE ];
+    memset( stack, 0, STACK_SIZE );
     
     // accept is a global
     memset( accept, 0, 256 );
@@ -78,13 +79,19 @@ int main( int argc, char *argv[] ) {
         accept[ let ] = 1;
     }
     unsigned char ok_cnt = 0;
+    
+    int stack_fill = 0; // how much of the stack is filled
+    bool stack_full = 0;
     while( 1 ) {
         unsigned char let = fgetc( data_handle );
+        if( feof( data_handle ) ) break;
         
-        //printf(".");
-        //unsigned char ok = let_okay( let );
-        //if( ok ) printf("%c", let );
-        //else phex( let );
+        if( !stack_full ) {
+            stack_fill++;
+            if( stack_fill == MIN_SEQUENCE ) {
+                stack_full = 1;
+            }
+        }
         
         // shift out the lowest char
         unsigned char n_ago = stack[ 0 ];
@@ -109,7 +116,7 @@ int main( int argc, char *argv[] ) {
         }
         
         if( ( num_ok + ok_cnt ) >= MIN_SEQUENCE ) {
-            printf( "%c", n_ago );
+            putchar( n_ago );
             ok_cnt++;
         }
         else {
@@ -117,7 +124,10 @@ int main( int argc, char *argv[] ) {
             ok_cnt = 0;
         }
         
-        if( feof( data_handle ) ) break;
+        
+    }
+    for( int i=0;i<stack_fill;i++ ) {
+        putchar( stack[ i ] );
     }
     fclose( data_handle );
 }
