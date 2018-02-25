@@ -1,4 +1,4 @@
-// Copyright (C) 2014 David Helkowski
+// Copyright (C) 2018 David Helkowski
 // License GNU AGPLv3
 
 #include<stdio.h>
@@ -19,7 +19,6 @@
 // Minimum number of sequential acceptable character needed to show text instead of hex
 #define MIN_SEQUENCE 3
 
-void phex( unsigned char let );
 unsigned char let_okay( unsigned char let );
 
 unsigned char accept[ 256 ];
@@ -120,11 +119,9 @@ int main( int argc, char *argv[] ) {
             ok_cnt++;
         }
         else {
-            phex( n_ago );
+            printf( "%c%02X", HEX_PREFIX, n_ago );
             ok_cnt = 0;
         }
-        
-        
     }
     for( int i=0;i<stack_fill;i++ ) {
         putchar( stack[ i ] );
@@ -141,8 +138,4 @@ unsigned char let_okay( unsigned char let ) {
     if( let >= '0' && let <= '9' ) ok = 1;
     #endif
     return ok;
-}
-
-void phex( unsigned char let ) {
-    printf( "%c%02X", HEX_PREFIX, let );
 }
