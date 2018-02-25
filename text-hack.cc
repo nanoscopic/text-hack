@@ -8,7 +8,7 @@
 #include<libgen.h>
 
 // Text to print before every hexidecimal byte representation
-#define HEX_PREFIX "~"
+#define HEX_PREFIX '~'
 
 // Characters to show normally instead of in hex
 #define OK_CHARACTERS " {}\"'=-()<>,./_![]:&;?"
@@ -31,11 +31,20 @@ int main( int argc, char *argv[] ) {
         if( isatty( STDIN_FILENO ) ) {
             showhelp = 1;
         }
+        else {
+            fprintf(stderr, "Reading input from redirection\n" );
+            data_handle = stdin;
+        }
     }
     
     if( argc > 1 ) {
         if( !strncmp( argv[1], "--help", 6 ) ) showhelp = 1;
+        fprintf(stderr, "Using file '%s' for input\n", argv[1] );
         data_handle = fopen( argv[1], "r" );
+        if( !data_handle ) {
+            fprintf(stderr, "File does not exist\n" );
+            return 1;
+        }
     }
     
     if( showhelp ) {
@@ -60,16 +69,14 @@ int main( int argc, char *argv[] ) {
     long pos = 0;
     
     unsigned char stack[20];
-    for( int i=0;i<20;i++ ) {
-        stack[i] = 0;
-    }
-    for( int i=0;i<256;i++ ) {
-        accept[i] = 0;
-    }
+    memset( stack, 0, 20 );
+    
+    // accept is a global
+    memset( accept, 0, 256 );
+    
     unsigned char accept_these[] = OK_CHARACTERS;
-    for( int i=0;i<256;i++ ) {
+    for( int i=0; i < sizeof( accept_these); i++ ) {
         unsigned char let = accept_these[ i ];
-        if( !let ) break;
         accept[ let ] = 1;
     }
     unsigned char ok_cnt = 0;
@@ -132,14 +139,5 @@ unsigned char let_okay( unsigned char let ) {
 }
 
 void phex( unsigned char let ) {
-    unsigned char low = let % 16;
-    let -= low;
-    let /= 16;
-    // let is now just high portion
-    unsigned char hexmap[] = "0123456789ABCDEF";
-    //if( !let ) printf("~%c",hexmap[low]);
-    //else
-    printf( HEX_PREFIX "%c%c",hexmap[let],hexmap[low]);
-    
-    //printf("(%hu,%hu[%c,%c])    ",let,low,hexmap[let],hexmap[low]);
+    printf( "%c%02X", HEX_PREFIX, let );
 }
