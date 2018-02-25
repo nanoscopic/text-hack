@@ -1,4 +1,10 @@
-text-hack
-=========
+# Text Hack
+Takes input data and outputs specific characters as regular text and hex for other characters.
 
-Binary to text hacking tool for reverse engineering non-text storage formats
+Characters configured to be output normally:<br>
+>  Alphanumerics<br>
+>  {}"'=-()<>,./_![]:&;?
+
+Usage:<br>
+>  text-hack [filename]<br>
+>  text-hack < filename
