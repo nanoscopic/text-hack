@@ -7,11 +7,8 @@
 #include<unistd.h>
 #include<libgen.h>
 #include<stdint.h>
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <stdio.h>
+#include<sys/types.h>
+#include<sys/stat.h>
 
 // Text to print before every hexidecimal byte representation
 #define HEX_PREFIX '~'
