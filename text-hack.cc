@@ -15,13 +15,14 @@
 
 // Comment this out to disable acceptance of alpha-numeric characters
 #define ALPHA_NUM
+#ifdef ALPHA_NUM
+    #define OK_CHARS OK_CHARACTERS "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+#else
+    #define OK_CHARS
+#endif
 
 // Minimum number of sequential acceptable character needed to show text instead of hex
 #define MIN_SEQUENCE 3
-
-unsigned char let_okay( unsigned char let );
-
-unsigned char accept[ 256 ];
 
 int main( int argc, char *argv[] ) {
     FILE *data_handle = 0;
@@ -69,14 +70,15 @@ int main( int argc, char *argv[] ) {
     unsigned char stack[ STACK_SIZE ];
     memset( stack, 0, STACK_SIZE );
     
-    // accept is a global
+    // Build accept charmap
+    unsigned char accept[ 256 ];
     memset( accept, 0, 256 );
-    
-    unsigned char accept_these[] = OK_CHARACTERS;
-    for( int i=0; i < sizeof( accept_these); i++ ) {
+    unsigned char accept_these[] = OK_CHARS;
+    for( int i=0; i < sizeof( accept_these ); i++ ) {
         unsigned char let = accept_these[ i ];
         accept[ let ] = 1;
     }
+    
     unsigned char ok_cnt = 0;
     
     int stack_fill = 0; // how much of the stack is filled
@@ -103,10 +105,10 @@ int main( int argc, char *argv[] ) {
         stack[ MIN_SEQUENCE - 1 ] = let;
         
         unsigned char num_ok = 0;
-        if( let_okay( n_ago ) ) {
+        if( accept[ n_ago ] ) {
             num_ok++;
             for( int i=0;i<=(MIN_SEQUENCE-1);i++ ) {
-                if( let_okay( stack[ i ] ) ) num_ok++;
+                if( accept[ stack[ i ] ] ) num_ok++;
                 else i=100;
             }
         }
@@ -127,15 +129,4 @@ int main( int argc, char *argv[] ) {
         putchar( stack[ i ] );
     }
     fclose( data_handle );
-}
-
-unsigned char let_okay( unsigned char let ) {
-    unsigned char ok = 0;
-    if( accept[ let ] ) ok = 1;
-    #ifdef ALPHA_NUM
-    if( let >= 'a' && let <= 'z' ) ok = 1;
-    if( let >= 'A' && let <= 'Z' ) ok = 1;
-    if( let >= '0' && let <= '9' ) ok = 1;
-    #endif
-    return ok;
 }
