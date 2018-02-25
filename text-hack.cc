@@ -71,7 +71,7 @@ int main( int argc, char *argv[] ) {
     char accept[ 256 ];
     memset( accept, 0, 256 );
     char accept_these[] = OK_CHARS;
-    for( int i=0; i < sizeof( accept_these ); i++ ) {
+    for( unsigned int i=0; i < sizeof( accept_these ); i++ ) {
         char let = accept_these[ i ];
         accept[ let ] = 1;
     }
