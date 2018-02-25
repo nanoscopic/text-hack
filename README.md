@@ -3,7 +3,7 @@ Takes input data and outputs specific characters as regular text and hex for oth
 
 Characters configured to be output normally:<br>
 >  Alphanumerics<br>
->  {}"'=-()<>,./_![]:&;?
+>  {}"'=-()<>,./_![]:&;?%
 
 Usage:<br>
 >  text-hack [filename]<br>
