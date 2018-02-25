@@ -24,6 +24,8 @@
 // Minimum number of sequential acceptable character needed to show text instead of hex
 #define MIN_SEQUENCE 3
 
+#define bool char
+
 int main( int argc, char *argv[] ) {
     FILE *data_handle = 0;
     bool showhelp = 0;

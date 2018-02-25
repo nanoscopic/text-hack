@@ -1,4 +1,4 @@
-CCSRCS = text-hack.cc
+CSRCS = text-hack.c
 
 CC = gcc
 
@@ -12,8 +12,8 @@ PROGRAM = text-hack
 
 all: $(PROGRAM)
 
-$(PROGRAM): 	$(CCSRCS)
-	$(CC) -o $(PROGRAM) $(CCSRCS) $(CFLAGS)
+$(PROGRAM): 	$(CSRCS)
+	$(CC) -o $(PROGRAM) $(CSRCS) $(CFLAGS)
 	strip $(PROGRAM)
 
 clean:			
