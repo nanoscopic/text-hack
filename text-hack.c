@@ -8,11 +8,16 @@
 #include<libgen.h>
 #include<stdint.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <stdio.h>
+
 // Text to print before every hexidecimal byte representation
 #define HEX_PREFIX '~'
 
 // Characters to show normally instead of in hex
-#define OK_CHARACTERS " {}\"'=-()<>,./_![]:&;?"
+#define OK_CHARACTERS " {}\"'=-()<>,./_![]:&;?%\n"
 
 // Comment this out to disable acceptance of alpha-numeric characters
 #define ALPHA_NUM
@@ -27,8 +32,36 @@
 
 #define bool char
 
+FILE *data_handle;
+uint32_t get_file_blocksize( FILE *fh ) {
+    int fno = fileno( data_handle );
+    struct stat fi;
+    fstat(fno, &fi);
+    if( !fi.st_blksize ) {
+        fprintf(stderr, "File blocksize unclear; defaulting to 512\n" );
+    }
+    return fi.st_blksize || 512;
+}
+
+uint32_t blocksize;
+char *buffer;
+
+uint32_t bufferpos = 0;
+uint32_t buffered = 0;
+bool get_byte( uint8_t *byte ) {
+    if( !buffered ) {
+        size_t bytes_read = fread( buffer, blocksize, 1, data_handle );
+        if( !bytes_read ) return 0;
+        buffered = bytes_read;
+        bufferpos = 0;
+    }
+    *byte = buffer[ bufferpos++ ];
+    buffered--;
+    return 1;
+}
+
 int main( int argc, char *argv[] ) {
-    FILE *data_handle = 0;
+    data_handle = 0;
     bool showhelp = 0;
     if( argc < 2 ) {
         if( isatty( STDIN_FILENO ) )
@@ -66,6 +99,9 @@ int main( int argc, char *argv[] ) {
         
     if( !data_handle ) return 1;
     
+    blocksize = get_file_blocksize( data_handle );
+    buffer = malloc( blocksize );
+        
     #define STACK_SIZE MIN_SEQUENCE + 1
     char stack[ STACK_SIZE ];
     memset( stack, 0, STACK_SIZE );
@@ -83,9 +119,9 @@ int main( int argc, char *argv[] ) {
     
     int stack_fill = 0; // how much of the stack is filled
     bool stack_full = 0;
+    uint8_t byte;
     while( 1 ) {
-        char let = fgetc( data_handle );
-        if( feof( data_handle ) ) break;
+        if( !get_byte( &byte ) ) break;
         
         if( !stack_full ) {
             if( ++stack_fill == MIN_SEQUENCE ) stack_full = 1;
@@ -99,7 +135,7 @@ int main( int argc, char *argv[] ) {
             stack[ i ] = stack[ i + 1 ];
         
         // "push" the new character onto the end of the stack
-        stack[ MIN_SEQUENCE - 1 ] = let;
+        stack[ MIN_SEQUENCE - 1 ] = byte;
         
         char ok_in_stack = 0;
         if( accept[ n_ago ] ) {
@@ -125,4 +161,5 @@ int main( int argc, char *argv[] ) {
         putchar( stack[ i ] );
 
     fclose( data_handle );
+    if( buffer ) free( buffer );
 }

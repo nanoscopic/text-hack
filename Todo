@@ -1,3 +1,4 @@
+- Modify "stack" to be a rotating buffer, so that it does not need to be shifted
 - Allow the textual format to be converted back into a binary
 - Add in a basic "diff" ability to see what was changed in the textual representation of a file
 - Add a header to the textual representation so that the file itself has information showing what file
@@ -15,6 +16,7 @@
   - Make it so that the view is basically editable and resaveable via pure javascript
   
 Done:
+- Read and write data in "blocksize" chunks for efficiency
 - Make the script properly accept data piped into it as well as read a named file in arguments
 - Show usage when the script is run without any arguments
 - Alter the code to use stdint.h instead of confusing "unsigned char" nonsense ( irrelevant now that printf is used to output hex )
