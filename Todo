@@ -10,7 +10,6 @@
 - Allow multiple output format; specifically XML for more complex file formats
 - Add the ability to detect and decompress embedded compressed data
 - Add a Makefile
-- Alter the code to use stdint.h instead of confusing "unsigned char" nonsense
 - Add a command line option to use lowercase hex instead of uppercase
 - Add an output format that renders files in the same way as they would basically be show in old DOS debug command
 - Add an HTML visualization format that creates a nicely colorized rendered view of the binary data.
@@ -19,3 +18,4 @@
 Done:
 - Make the script properly accept data piped into it as well as read a named file in arguments
 - Show usage when the script is run without any arguments
+- Alter the code to use stdint.h instead of confusing "unsigned char" nonsense ( irrelevant now that printf is used to output hex )
