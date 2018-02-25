@@ -66,8 +66,6 @@ int main( int argc, char *argv[] ) {
         return 1;
     }
     
-    long pos = 0;
-    
     unsigned char stack[20];
     memset( stack, 0, 20 );
     
@@ -87,8 +85,6 @@ int main( int argc, char *argv[] ) {
         //unsigned char ok = let_okay( let );
         //if( ok ) printf("%c", let );
         //else phex( let );
-        
-        pos++;
         
         // shift out the lowest char
         unsigned char n_ago = stack[ 0 ];
@@ -122,7 +118,6 @@ int main( int argc, char *argv[] ) {
         }
         
         if( feof( data_handle ) ) break;
-        if( pos > 40000 ) break;
     }
     fclose( data_handle );
 }
